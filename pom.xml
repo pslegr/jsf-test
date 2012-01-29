@@ -4,19 +4,19 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>6</version>
+        <version>8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.test-jsf</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
     <name>JSF Test Framework</name>
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:git:git://github.com/alexsmirnov/jsf-test.git</connection>
-        <developerConnection>scm:git:git@github.com:alexsmirnov/jsf-test.git</developerConnection>
-        <url>https://github.com/alexsmirnov/jsf-test</url>
+        <connection>scm:git:git://github.com/richfaces/jsf-test.git</connection>
+        <developerConnection>scm:git:git@github.com:richfaces/jsf-test.git</developerConnection>
+        <url>https://github.com/richfaces/jsf-test/tree/develop</url>
     </scm>
 
     <modules>
@@ -37,8 +37,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>1.5</source>
-                        <target>1.5</target>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
                     </configuration>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
