@@ -70,6 +70,10 @@
                     <name>postConstruct</name>
                     <type>String</type>
                 </field>
+                <field>
+                    <name>imports</name>
+                    <type>String</type>
+                </field>
 				
 				<field xml.tagName="class-name">
 					<name>className</name>

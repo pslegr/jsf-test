@@ -98,7 +98,8 @@ public class MockJavaSource extends JavaSource {
     		"import java.lang.reflect.Method;\n" + 
     		"import org.easymock.IMocksControl;\n" + 
             "import %4$s;\n" + 
-            "import %4$s.MockObject;\n\n" + 
+            "import %4$s.MockObject;\n\n" +
+            "%6$s\n\n" +
     		"public class %2$s extends %3$s implements MockObject {\n" + 
     		"\n" + 
     		"    private final IMocksControl control;\n" + 
@@ -161,8 +162,8 @@ public class MockJavaSource extends JavaSource {
         this.mockController = mockController;
     }
 
-    public void printFileHeader(String postConstruct) {
-        sprintf(fileHeader,mockPackage,mockClass,className,mockController,notNullString(postConstruct));
+    public void printFileHeader(String postConstruct, String imports) {
+        sprintf(fileHeader,mockPackage,mockClass,className,mockController,notNullString(postConstruct), notNullString(imports));
     }
 
     private String notNullString(String postConstruct) {

@@ -47,10 +47,13 @@ import org.jboss.test.faces.mock.context.MockExceptionHandlerFactory;
 import org.jboss.test.faces.mock.context.MockExternalContextFactory;
 import org.jboss.test.faces.mock.context.MockFacesContext;
 import org.jboss.test.faces.mock.context.MockFacesContextFactory;
+import org.jboss.test.faces.mock.context.MockInitFacesContext;
 import org.jboss.test.faces.mock.context.MockPartialViewContextFactory;
 import org.jboss.test.faces.mock.lifecycle.MockLifecycleFactory;
 import org.jboss.test.faces.mock.render.MockRenderKitFactory;
 import org.jboss.test.faces.writer.RecordingResponseWriter;
+
+import com.sun.faces.config.InitFacesContext;
 
 /**
  * <p class="changed_added_4_0">
@@ -133,7 +136,12 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
 
     MockFacesEnvironment(IMocksControl mocksControl) {
         this.mocksControl = mocksControl;
-        facesContext = createMock(FacesContext.class);
+        Class<? extends FacesContext> facesContextClass = FacesContext.class;
+        try {
+            facesContextClass = (Class<? extends FacesContext>) Class.forName("com.sun.faces.config.InitFacesContext");
+        } catch (ClassNotFoundException e) {
+        }
+        facesContext = createMock(facesContextClass);
         instance.set(this);
     }
 
@@ -149,7 +157,11 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
      * public MockFacesEnvironment _(){ return this; }
      */
     public MockFacesEnvironment withExternalContext() {
-        this.externalContext = createMock(ExternalContext.class);
+        if (facesContext instanceof MockInitFacesContext) {
+            this.externalContext = ((MockInitFacesContext) facesContext).getExternalContextMock();
+        } else {
+            this.externalContext = createMock(ExternalContext.class);
+        }
         recordExternalContext();
         return this;
     }
@@ -177,7 +189,11 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
         if (null == externalContext) {
             withExternalContext();
         }
-        this.context = mocksControl.createMock(ServletContext.class);
+        if (this.facesContext instanceof MockInitFacesContext) {
+            this.context = ((MockInitFacesContext) this.facesContext).getServletContextMock();
+        } else {
+            this.context = mocksControl.createMock(ServletContext.class);
+        }
         this.request = mocksControl.createMock(HttpServletRequest.class);
         this.response = mocksControl.createMock(HttpServletResponse.class);
         recordServletRequest();
@@ -191,7 +207,10 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
     }
 
     public MockFacesEnvironment withFactories() {
-        FactoryFinder.releaseFactories();
+        try {
+            FactoryFinder.releaseFactories();
+        } catch (Exception e) {
+        }
         FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
         FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY, MockFacesContextFactory.class.getName());
         FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY, MockRenderKitFactory.class.getName());

@@ -38,8 +38,10 @@ public class EnvironmentTest {
     
     @After
     public void thearDown() throws Exception{
-        environment.release();
-        environment = null;
+        if (environment != null) {
+            environment.release();
+            environment = null;
+        }
     }
 
     @Test

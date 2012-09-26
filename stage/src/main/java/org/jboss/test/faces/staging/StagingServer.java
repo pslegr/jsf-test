@@ -570,6 +570,7 @@ public class StagingServer extends ApplicationServer {
 				new EventInvoker<ServletContextListener>() {
 					public void invoke(ServletContextListener listener) {
 						listener.contextInitialized(event);
+						
 					}
 				})>0){
             throw new TestException("Server not started due to listener error ");

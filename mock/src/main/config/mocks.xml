@@ -20,6 +20,22 @@
        <method name="release" exclude="true" />
     </mock>
     <mock>
+        <name>org.jboss.test.faces.mock.context.MockInitFacesContext</name>
+        <class-name>com.sun.faces.config.InitFacesContext</class-name>
+        <postConstruct>super(null);</postConstruct>
+        <code><![CDATA[//
+           @Override
+           public void release() {
+               setCurrentInstance(null);
+           }
+           
+           public static void setCurrentInstance(javax.faces.context.FacesContext context) {
+                javax.faces.context.FacesContext.setCurrentInstance(context);
+            }
+                //]]></code>
+       <method name="release" exclude="true" />
+    </mock>
+    <mock>
        <name>org.jboss.test.faces.mock.context.MockFacesContextFactory</name>
        <class-name>javax.faces.context.FacesContextFactory</class-name>
     </mock>
