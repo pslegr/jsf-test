@@ -45,7 +45,7 @@ public class MockControlSource extends JavaSource {
     		"\n" + 
     		"package %1$s;\n" + 
     		"\n" + 
-    		"import static org.easymock.EasyMock.*;\n" + 
+    		"import static org.easymock.classextension.EasyMock.*;\n" + 
     		"\n" + 
     		"import java.lang.reflect.Constructor;\n" + 
     		"import java.lang.reflect.Method;\n" + 

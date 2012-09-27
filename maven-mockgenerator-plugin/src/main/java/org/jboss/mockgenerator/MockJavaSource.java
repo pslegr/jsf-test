@@ -92,7 +92,7 @@ public class MockJavaSource extends JavaSource {
     		"\n" + 
     		"package %1$s;\n" + 
     		"\n" + 
-            "import static org.easymock.EasyMock.*;\n" + 
+            "import static org.easymock.classextension.EasyMock.*;\n" + 
             "import static %4$s.findMethod;\n" + 
             "import static %4$s.invokeMethod;\n\n" + 
     		"import java.lang.reflect.Method;\n" + 
@@ -104,25 +104,7 @@ public class MockJavaSource extends JavaSource {
     		"\n" + 
     		"    private final IMocksControl control;\n" + 
             "\n" + 
-            "    private final String name;\n" + 
-    		"\n" + 
-            "    /**\n" + 
-            "     * Default constructor\n" + 
-            "     */\n" + 
-            "    public %2$s() {\n" + 
-            "            %5$s" + 
-    		"            this.control =  createControl();\n" + 
-            "            this.name = null;\n" + 
-            "    }\n" + 
-    		"\n"+
-    		"    /**\n" + 
-    		"     * @param control\n" + 
-    		"     */\n" + 
-    		"    public %2$s(IMocksControl control, String name) {\n" + 
-            "        %5$s" + 
-    		"        this.control = control;\n" + 
-            "        this.name = name;\n" + 
-    		"    }\n" + 
+            "    private final String name;\n" +
     		"\n" + 
     		"    public IMocksControl getControl() {\n" + 
     		"        return control;\n" + 
@@ -152,6 +134,26 @@ public class MockJavaSource extends JavaSource {
     "        }\n" +
     "    }\n" +
     "\n}\n";
+    
+
+    
+    private static final String defaultConstructors = "    /**\n" + 
+            "     * Default constructor\n" + 
+            "     */\n" + 
+            "    public %2$s() {\n" + 
+            "            %5$s" + 
+            "            this.control =  createControl();\n" + 
+            "            this.name = null;\n" + 
+            "    }\n" + 
+            "\n"+
+            "    /**\n" + 
+            "     * @param control\n" + 
+            "     */\n" + 
+            "    public %2$s(IMocksControl control, String name) {\n" + 
+            "        %5$s" + 
+            "        this.control = control;\n" + 
+            "        this.name = name;\n" + 
+            "    }\n";
 
     private final String mockController; 
     
@@ -162,8 +164,13 @@ public class MockJavaSource extends JavaSource {
         this.mockController = mockController;
     }
 
-    public void printFileHeader(String postConstruct, String imports) {
-        sprintf(fileHeader,mockPackage,mockClass,className,mockController,notNullString(postConstruct), notNullString(imports));
+    public void printFileHeader(String postConstruct, String imports, String constructors) {
+        if (constructors == null) {
+            constructors = defaultConstructors;
+        }
+        
+        sprintf(fileHeader,mockPackage,mockClass,className,mockController,notNullString(postConstruct), notNullString(imports), constructors);
+        sprintf(constructors,mockPackage,mockClass,className,mockController,notNullString(postConstruct), notNullString(imports));
     }
 
     private String notNullString(String postConstruct) {

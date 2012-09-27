@@ -151,7 +151,7 @@ public abstract class AbstractMockMojo extends AbstractMojo {
             }
             MockJavaSource javaSource = new MockJavaSource(getOutputJavaDirectory(),
                     mockClassName, className, mockConfig.getMockController());
-            javaSource.printFileHeader(mock.getPostConstruct(), mock.getImports());
+            javaSource.printFileHeader(mock.getPostConstruct(), mock.getImports(), mock.getConstructors());
             List<Method> declaredMethods = getPublicMethods(baseClass);
             for (Method method : declaredMethods) {
                 String name = method.getName();

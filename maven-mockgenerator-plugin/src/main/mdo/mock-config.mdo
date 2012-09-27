@@ -74,6 +74,10 @@
                     <name>imports</name>
                     <type>String</type>
                 </field>
+                <field>
+                    <name>constructors</name>
+                    <type>String</type>
+                </field>
 				
 				<field xml.tagName="class-name">
 					<name>className</name>

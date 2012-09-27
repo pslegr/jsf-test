@@ -1,8 +1,6 @@
 package org.jboss.test.faces.mock;
 
-import static org.easymock.EasyMock.createControl;
-import static org.easymock.EasyMock.createNiceControl;
-import static org.easymock.EasyMock.createStrictControl;
+import static org.easymock.classextension.EasyMock.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,6 +8,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.easymock.IMocksControl;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.internal.ClassExtensionHelper;
 import org.easymock.internal.ObjectMethodsFilter;
 /**
  * <p class="changed_added_4_0"></p>
@@ -45,11 +45,11 @@ public class FacesMock {
                 throw new IllegalArgumentException("Class " + clazz.getName() + " cannot be created", e);
             }
         } else {
-            try {
-                return FacesMockController.createMock(name, clazz, control);
-            } catch (ClassNotFoundException e) {
+//            try {
+//                return FacesMockController.createMock(name, clazz, control);
+//            } catch (ClassNotFoundException e) {
                 return control.createMock(name, clazz);
-            }
+//            }
         }
     }
 
@@ -100,8 +100,7 @@ public class FacesMock {
                     }
                 }
             // Delegate to EazyMock
-            return ((ObjectMethodsFilter) Proxy
-                .getInvocationHandler(mock)).getDelegate().getControl();
+            return ClassExtensionHelper.getControl(mock);
         }
     }
     

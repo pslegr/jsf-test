@@ -23,7 +23,7 @@
 
 package org.jboss.test.faces.mock;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.classextension.EasyMock.*;
 
 import java.util.HashMap;
 
@@ -322,7 +322,7 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
     }
 
     public void release() {
-        facesContext.release();
+        MockFacesContext.releaseContext();
         instance.remove();
         if (withFactories) {
             FactoryFinder.releaseFactories();

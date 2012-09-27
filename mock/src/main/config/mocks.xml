@@ -22,7 +22,44 @@
     <mock>
         <name>org.jboss.test.faces.mock.context.MockInitFacesContext</name>
         <class-name>com.sun.faces.config.InitFacesContext</class-name>
-        <postConstruct>super(null);</postConstruct>
+        <imports>
+            import javax.faces.context.ExternalContext;
+            import javax.servlet.ServletContext;
+            import org.jboss.test.faces.mock.FacesMock;
+        </imports>
+        <constructors>
+            private final ExternalContext externalContext;
+            private final ServletContext servletContext;
+    
+            public MockInitFacesContext() {
+                this(createControl(), null);
+            }
+            
+            public MockInitFacesContext(IMocksControl control, String name) {
+                this(control, name, FacesMock.createMock(null, ExternalContext.class, control), control.createMock(ServletContext.class));
+            }
+            
+            public MockInitFacesContext(IMocksControl control, String name, ExternalContext externalContext, ServletContext servletContext) {
+                super(servletContext);
+                this.control = control;
+                this.name = name;
+                this.servletContext = servletContext;
+                this.externalContext = externalContext;
+                
+                control.reset();
+                
+                expect(this.getExternalContext()).andStubReturn(externalContext);
+                expect(externalContext.getContext()).andStubReturn(servletContext);
+            }
+            
+            public ServletContext getServletContextMock() {
+                return servletContext;
+            }
+            
+            public ExternalContext getExternalContextMock() {
+                return externalContext;
+            }
+        </constructors>
         <code><![CDATA[//
            @Override
            public void release() {

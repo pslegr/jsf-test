@@ -16,7 +16,7 @@ public class ViewBuilderTest {
     @Test
     public void testCreateView() {
         UIViewRoot component = ViewBuilder.createView().setViewId(FOO_XML).getComponent();
-        assertTrue(component instanceof MockUIViewRoot);
+        assertTrue(component instanceof UIViewRoot);
         checkViewId(component);
     }
 

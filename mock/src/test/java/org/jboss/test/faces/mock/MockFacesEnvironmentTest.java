@@ -23,7 +23,7 @@
 
 package org.jboss.test.faces.mock;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.classextension.EasyMock.*;
 
 import javax.faces.FactoryFinder;
 import javax.faces.context.ExternalContext;
@@ -76,7 +76,6 @@ public class MockFacesEnvironmentTest {
     @Test
     public void testFactories() throws Exception {
         mockEnvironment.withExternalContext();
-        mockEnvironment.replay();
         mockEnvironment.withFactories();
         Object factory = FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
         assertTrue(factory instanceof MockFacesContextFactory);
@@ -84,6 +83,7 @@ public class MockFacesEnvironmentTest {
         expect(mockFactory.getFacesContext(anyObject(), anyObject(), anyObject(), (Lifecycle) anyObject())).andReturn(
                 mockEnvironment.getFacesContext());
         Lifecycle lifecycle = mockEnvironment.createMock(Lifecycle.class);
+        mockEnvironment.replay();
         FacesMock.replay(factory);
         FacesContextFactory factory2 = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
         assertSame(factory, factory2);
@@ -95,11 +95,11 @@ public class MockFacesEnvironmentTest {
     @Test
     public void testExternalContextInitialization() {
         mockEnvironment.withExternalContext();
-        assertTrue(mockEnvironment.getExternalContext() instanceof MockExternalContext);
+        assertTrue(mockEnvironment.getExternalContext() instanceof ExternalContext);
 
         mockEnvironment.replay();
-        assertTrue(mockEnvironment.getFacesContext().getExternalContext() instanceof MockExternalContext);
-        assertTrue(FacesContext.getCurrentInstance().getExternalContext() instanceof MockExternalContext);
+        assertTrue(mockEnvironment.getFacesContext().getExternalContext() instanceof ExternalContext);
+        assertTrue(FacesContext.getCurrentInstance().getExternalContext() instanceof ExternalContext);
         assertSame(mockEnvironment.getFacesContext().getExternalContext(), FacesContext.getCurrentInstance()
                 .getExternalContext());
     }
