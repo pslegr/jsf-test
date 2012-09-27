@@ -23,18 +23,28 @@
 
 package org.jboss.test.faces.mock;
 
-import static org.easymock.classextension.EasyMock.*;
+import static org.easymock.classextension.EasyMock.createControl;
+import static org.easymock.classextension.EasyMock.createNiceControl;
+import static org.easymock.classextension.EasyMock.createStrictControl;
 
 import java.util.HashMap;
 
 import javax.el.ELContext;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ViewHandler;
+import javax.faces.context.ExceptionHandlerFactory;
 import javax.faces.context.ExternalContext;
+import javax.faces.context.ExternalContextFactory;
 import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextFactory;
+import javax.faces.context.PartialViewContextFactory;
+import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.render.RenderKit;
+import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
+import javax.faces.view.facelets.TagHandlerDelegateFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,18 +52,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.easymock.internal.MocksControl.MockType;
-import org.jboss.test.faces.mock.application.MockApplicationFactory;
-import org.jboss.test.faces.mock.context.MockExceptionHandlerFactory;
-import org.jboss.test.faces.mock.context.MockExternalContextFactory;
-import org.jboss.test.faces.mock.context.MockFacesContext;
-import org.jboss.test.faces.mock.context.MockFacesContextFactory;
-import org.jboss.test.faces.mock.context.MockInitFacesContext;
-import org.jboss.test.faces.mock.context.MockPartialViewContextFactory;
-import org.jboss.test.faces.mock.lifecycle.MockLifecycleFactory;
-import org.jboss.test.faces.mock.render.MockRenderKitFactory;
+import org.jboss.test.faces.mock.factory.FactoryMock;
+import org.jboss.test.faces.mock.factory.FactoryMockingService;
 import org.jboss.test.faces.writer.RecordingResponseWriter;
-
-import com.sun.faces.config.InitFacesContext;
 
 /**
  * <p class="changed_added_4_0">
@@ -62,7 +63,7 @@ import com.sun.faces.config.InitFacesContext;
  * @author asmirnov@exadel.com
  * 
  */
-public class MockFacesEnvironment implements FacesMockController.MockObject {
+public class MockFacesEnvironment {
 
     private static ThreadLocal<MockFacesEnvironment> instance = new ThreadLocal<MockFacesEnvironment>();
 
@@ -95,6 +96,9 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
 	private RecordingResponseWriter responseWriter;
 
     private static boolean jsf2;
+    
+    /** The service. */
+    private FactoryMockingService service = FactoryMockingService.getInstance();
 
     static {
         try {
@@ -157,11 +161,7 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
      * public MockFacesEnvironment _(){ return this; }
      */
     public MockFacesEnvironment withExternalContext() {
-        if (facesContext instanceof MockInitFacesContext) {
-            this.externalContext = ((MockInitFacesContext) facesContext).getExternalContextMock();
-        } else {
-            this.externalContext = createMock(ExternalContext.class);
-        }
+        this.externalContext = createMock(ExternalContext.class);
         recordExternalContext();
         return this;
     }
@@ -189,11 +189,7 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
         if (null == externalContext) {
             withExternalContext();
         }
-        if (this.facesContext instanceof MockInitFacesContext) {
-            this.context = ((MockInitFacesContext) this.facesContext).getServletContextMock();
-        } else {
-            this.context = mocksControl.createMock(ServletContext.class);
-        }
+        this.context = mocksControl.createMock(ServletContext.class);
         this.request = mocksControl.createMock(HttpServletRequest.class);
         this.response = mocksControl.createMock(HttpServletResponse.class);
         recordServletRequest();
@@ -207,25 +203,40 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
     }
 
     public MockFacesEnvironment withFactories() {
-        try {
-            FactoryFinder.releaseFactories();
-        } catch (Exception e) {
-        }
-        FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
-        FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY, MockFacesContextFactory.class.getName());
-        FactoryFinder.setFactory(FactoryFinder.RENDER_KIT_FACTORY, MockRenderKitFactory.class.getName());
-        FactoryFinder.setFactory(FactoryFinder.LIFECYCLE_FACTORY, MockLifecycleFactory.class.getName());
+        FactoryFinder.releaseFactories();
+
+        setupAndEnhance(ApplicationFactory.class);
+        setupAndEnhance(FacesContextFactory.class);
+        setupAndEnhance(RenderKitFactory.class);
+        setupAndEnhance(LifecycleFactory.class);
+
         if (jsf2) {
-            FactoryFinder.setFactory(FactoryFinder.TAG_HANDLER_DELEGATE_FACTORY, MockType.class.getName());
-            FactoryFinder.setFactory(FactoryFinder.EXCEPTION_HANDLER_FACTORY, MockExceptionHandlerFactory.class
-                .getName());
-            FactoryFinder.setFactory(FactoryFinder.PARTIAL_VIEW_CONTEXT_FACTORY, MockPartialViewContextFactory.class
-                .getName());
-            FactoryFinder
-                .setFactory(FactoryFinder.EXTERNAL_CONTEXT_FACTORY, MockExternalContextFactory.class.getName());
+            setupAndEnhance(TagHandlerDelegateFactory.class);
+            setupAndEnhance(ExceptionHandlerFactory.class);
+            setupAndEnhance(PartialViewContextFactory.class);
+            setupAndEnhance(ExternalContextFactory.class);
         }
+
         withFactories = true;
         return this;
+    }
+    
+    /**
+     * Setup and enhance.
+     * 
+     * @param <T>
+     *            the generic type
+     * @param type
+     *            the type
+     * @return the t
+     */
+    private <T> T setupAndEnhance(Class<T> type) {
+        String factoryName = type.getName();
+        FactoryMock<T> factoryMock = service.createFactoryMock(type);
+        FactoryFinder.setFactory(factoryName, factoryMock.getMockClassName());
+        T mock = type.cast(FactoryFinder.getFactory(factoryName));
+        service.enhance(factoryMock, mock);
+        return mock;
     }
 
     public MockFacesEnvironment withApplication() {
@@ -322,7 +333,7 @@ public class MockFacesEnvironment implements FacesMockController.MockObject {
     }
 
     public void release() {
-        MockFacesContext.releaseContext();
+        MockFacesContext.setCurrentInstance(null);
         instance.remove();
         if (withFactories) {
             FactoryFinder.releaseFactories();

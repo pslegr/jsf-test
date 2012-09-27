@@ -4,12 +4,12 @@ import static org.easymock.classextension.EasyMock.*;
 import static org.junit.Assert.*;
 
 import javax.faces.FactoryFinder;
+import javax.faces.component.UIData;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.jboss.test.faces.mock.Environment.Feature;
-import org.jboss.test.faces.mock.component.MockUIData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,7 +25,7 @@ public class RunnerTest {
     protected UIViewRoot viewRoot;
     
     @Mock
-    protected MockUIData data;
+    protected UIData data;
     
     protected MockController controller;
     

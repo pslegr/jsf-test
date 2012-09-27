@@ -34,8 +34,6 @@ import javax.faces.lifecycle.Lifecycle;
 import static org.junit.Assert.*;
 
 import org.easymock.EasyMock;
-import org.jboss.test.faces.mock.context.MockExternalContext;
-import org.jboss.test.faces.mock.context.MockFacesContextFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +76,7 @@ public class MockFacesEnvironmentTest {
         mockEnvironment.withExternalContext();
         mockEnvironment.withFactories();
         Object factory = FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-        assertTrue(factory instanceof MockFacesContextFactory);
+        assertTrue(factory instanceof FacesContextFactory);
         FacesContextFactory mockFactory = (FacesContextFactory) factory;
         expect(mockFactory.getFacesContext(anyObject(), anyObject(), anyObject(), (Lifecycle) anyObject())).andReturn(
                 mockEnvironment.getFacesContext());

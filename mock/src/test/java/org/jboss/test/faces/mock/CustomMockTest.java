@@ -26,6 +26,8 @@ package org.jboss.test.faces.mock;
 import static org.easymock.classextension.EasyMock.*;
 import static org.junit.Assert.*;
 
+import javax.faces.component.UIOutput;
+
 import org.junit.Test;
 
 
@@ -38,15 +40,14 @@ public class CustomMockTest {
     
     @Test
     public void testMockOutput() throws Exception {
-        MockUIOutput uiOutput = FacesMock.createMock(MockUIOutput.class);
+        UIOutput uiOutput = FacesMock.createMock(UIOutput.class);
         Object value = "FOO";
-        uiOutput.setValue(value);expectLastCall();
+        uiOutput.setValue(value);
+        expectLastCall();
         expect(uiOutput.getValue()).andReturn(value );
-        expect(uiOutput.concat(value, 3)).andReturn("FOO3" );
         FacesMock.replay(uiOutput);
         uiOutput.setValue(value);
         assertSame(value,    uiOutput.getValue());
-        assertEquals("FOO3", uiOutput.concat(value, 3));
         FacesMock.verify(uiOutput);
     }
 

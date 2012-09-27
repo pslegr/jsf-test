@@ -1,24 +1,17 @@
 package org.jboss.test.faces.mock;
 
-import static org.easymock.classextension.EasyMock.*;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import static org.easymock.classextension.EasyMock.createControl;
+import static org.easymock.classextension.EasyMock.createNiceControl;
+import static org.easymock.classextension.EasyMock.createStrictControl;
 
 import org.easymock.IMocksControl;
-import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.internal.ClassExtensionHelper;
-import org.easymock.internal.ObjectMethodsFilter;
 /**
  * <p class="changed_added_4_0"></p>
  * @author asmirnov@exadel.com
  *
  */
 public class FacesMock {
-    
-    private static final Class<?> MOCK_OBJECT = FacesMockController.MockObject.class;
 
     private FacesMock() {
         //hidden constructor
@@ -37,20 +30,10 @@ public class FacesMock {
     }
 
     public static <T> T createMock(String name, Class<T> clazz, IMocksControl control) {
-        if (MOCK_OBJECT.isAssignableFrom(clazz) || isMockClass(clazz)) {
-            try {
-                Constructor<T> constructor = clazz.getConstructor(IMocksControl.class, String.class);
-                return constructor.newInstance(control, name);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Class " + clazz.getName() + " cannot be created", e);
-            }
-        } else {
-//            try {
-//                return FacesMockController.createMock(name, clazz, control);
-//            } catch (ClassNotFoundException e) {
-                return control.createMock(name, clazz);
-//            }
+        if (clazz == MockFacesEnvironment.class) {
+            return (T) new MockFacesEnvironment(control, name);
         }
+        return control.createMock(name, clazz);
     }
 
     public static <T> T createMock(Class<T> clazz){
@@ -78,30 +61,7 @@ public class FacesMock {
     }
     
     private static IMocksControl getControl(Object mock) {
-        if (mock instanceof FacesMockController.MockObject) {
-            FacesMockController.MockObject mockObject = (FacesMockController.MockObject) mock;
-            return mockObject.getControl();
-        } else {
-            // Check additional test controlled created mocks.
-                Class<? extends Object> mockClass = mock.getClass();
-                if(isMockClass(mockClass)){
-                    try {
-                        Method getControl = mockClass.getMethod("getControl");
-                        if(IMocksControl.class.equals(getControl.getReturnType())){
-                            return (IMocksControl) getControl.invoke(mock);
-                        }
-                    } catch (SecurityException e) {
-                    } catch (NoSuchMethodException e) {
-                    } catch (IllegalArgumentException e) {
-                    } catch (IllegalAccessException e) {
-                        // TODO Auto-generated catch block
-                    } catch (InvocationTargetException e) {
-                        // TODO Auto-generated catch block
-                    }
-                }
-            // Delegate to EazyMock
-            return ClassExtensionHelper.getControl(mock);
-        }
+        return ClassExtensionHelper.getControl(mock);
     }
     
     private static boolean isMockClass(Class<?> clazz){

@@ -28,7 +28,6 @@ import static org.junit.Assert.*;
 
 import javax.faces.component.UIData;
 
-import org.jboss.test.faces.mock.component.MockUIData;
 import org.junit.Test;
 
 
@@ -41,8 +40,8 @@ public class TestMockController {
     
     @Test
     public void testCreateMock() throws Exception {
-        UIData uiData = FacesTestMockController.createMock("data", UIData.class);
-        assertEquals(MockUIData.class, uiData.getClass());
+        UIData uiData = FacesMock.createMock(UIData.class);
+        assertTrue(uiData instanceof UIData);
         expect(uiData.getClientId()).andReturn("foo");
         expect(uiData.getRowCount()).andReturn(5);
         FacesMock.replay(uiData);
