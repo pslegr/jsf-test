@@ -33,10 +33,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.faces.context.FacesContext;
+
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 
 /**
  * <p class="changed_added_4_0">
@@ -374,5 +377,35 @@ public class MockTestRunner extends BlockJUnit4ClassRunner {
 
     private static String notEmpty(String value) {
         return "".equals(value)?null:value;
+    }
+    
+    @Override
+    protected Statement withAfters(FrameworkMethod method, Object target, Statement statement) {
+        Statement afterStatement = super.withAfters(method, target, statement);
+        
+        Statement resetContextStatement = new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                MockFacesContext.setCurrentInstance(null);
+            }
+        };
+        
+        return new ComposedStatement(afterStatement, resetContextStatement);
+    }
+    
+    private static class ComposedStatement extends Statement {
+        
+        private Statement[] statements;
+        
+        public ComposedStatement(Statement... statements) {
+            this.statements = statements;
+        }
+        
+        @Override
+        public void evaluate() throws Throwable {
+            for (Statement statement : statements) {
+                statement.evaluate();
+            }
+        }
     }
 }

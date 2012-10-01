@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.jboss.test.faces.mock.Environment.Feature;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,5 +65,11 @@ public class RunnerTest {
         controller.replay();
         assertEquals("foo",data.getId());
         controller.verify();
+    }
+    
+    @AfterClass
+    public static void testFacesContextNull() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        assertNull("FacesContext must be null after finishing all test methods", facesContext);
     }
 }
