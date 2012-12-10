@@ -1,11 +1,8 @@
 package org.jboss.test.faces.mock;
 
-import static org.easymock.classextension.EasyMock.createControl;
-import static org.easymock.classextension.EasyMock.createNiceControl;
-import static org.easymock.classextension.EasyMock.createStrictControl;
-
 import org.easymock.IMocksControl;
 import org.easymock.classextension.internal.ClassExtensionHelper;
+import org.easymock.internal.MocksControl;
 /**
  * <p class="changed_added_4_0"></p>
  * @author asmirnov@exadel.com
@@ -18,15 +15,15 @@ public class FacesMock {
     }
 
     public static MockFacesEnvironment createMockEnvironment(){
-        return new MockFacesEnvironment(createControl());
+        return new MockFacesEnvironment(new FacesMocksClassControl(MocksControl.MockType.DEFAULT));
     }
 
     public static MockFacesEnvironment createNiceEnvironment(){
-        return new MockFacesEnvironment(createNiceControl());
+        return new MockFacesEnvironment(new FacesMocksClassControl(MocksControl.MockType.NICE));
     }
 
     public static MockFacesEnvironment createStrictEnvironment(){
-        return new MockFacesEnvironment(createStrictControl());
+        return new MockFacesEnvironment(new FacesMocksClassControl(MocksControl.MockType.STRICT));
     }
 
     public static <T> T createMock(String name, Class<T> clazz, IMocksControl control) {
@@ -39,9 +36,9 @@ public class FacesMock {
     public static <T> T createMock(Class<T> clazz){
         return createMock(null, clazz);
     }
-    
+
     public static <T> T createMock(String name, Class<T> clazz){
-        return createMock(name, clazz, createControl());
+        return createMock(name, clazz, new FacesMocksClassControl(MocksControl.MockType.DEFAULT));
     }
 
     public static <T> T createNiceMock(Class<T> clazz){
@@ -49,21 +46,21 @@ public class FacesMock {
     }
 
     public static <T> T createNiceMock(String name, Class<T> clazz) {
-        return createMock(name, clazz, createNiceControl());
+        return createMock(name, clazz, new FacesMocksClassControl(MocksControl.MockType.NICE));
     }
-    
+
     public static <T> T createStrictMock(Class<T> clazz){
         return createStrictMock(null, clazz);
     }
-    
+
     public static <T> T createStrictMock(String name, Class<T> clazz){
-        return createMock(name, clazz, createStrictControl());
+        return createMock(name, clazz, new FacesMocksClassControl(MocksControl.MockType.STRICT));
     }
-    
+
     private static IMocksControl getControl(Object mock) {
         return ClassExtensionHelper.getControl(mock);
     }
-    
+
     private static boolean isMockClass(Class<?> clazz){
         Class<?>[] interfaces = clazz.getInterfaces();
         for (Class<?> interfaze : interfaces) {
@@ -71,7 +68,7 @@ public class FacesMock {
                 return true;
             }
         }
-        return false;   
+        return false;
     }
 
     public static void replay(Object... mocks) {
@@ -88,9 +85,9 @@ public class FacesMock {
 
     /**
      * Resets the given mock objects (more exactly: the controls of the mock
-     * objects) and turn them to a mock with nice behavior. For details, see 
+     * objects) and turn them to a mock with nice behavior. For details, see
      * the EasyMock documentation.
-     * 
+     *
      * @param mocks
      *            the mock objects
      */
@@ -102,9 +99,9 @@ public class FacesMock {
 
     /**
      * Resets the given mock objects (more exactly: the controls of the mock
-     * objects) and turn them to a mock with default behavior. For details, see 
+     * objects) and turn them to a mock with default behavior. For details, see
      * the EasyMock documentation.
-     * 
+     *
      * @param mocks
      *            the mock objects
      */
@@ -116,9 +113,9 @@ public class FacesMock {
 
     /**
      * Resets the given mock objects (more exactly: the controls of the mock
-     * objects) and turn them to a mock with strict behavior. For details, see 
+     * objects) and turn them to a mock with strict behavior. For details, see
      * the EasyMock documentation.
-     * 
+     *
      * @param mocks
      *            the mock objects
      */
@@ -138,7 +135,7 @@ public class FacesMock {
      * Switches order checking of the given mock object (more exactly: the
      * control of the mock object) the on and off. For details, see the EasyMock
      * documentation.
-     * 
+     *
      * @param mock
      *            the mock object.
      * @param state

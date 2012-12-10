@@ -23,10 +23,6 @@
 
 package org.jboss.test.faces.mock;
 
-import static org.easymock.classextension.EasyMock.createControl;
-import static org.easymock.classextension.EasyMock.createNiceControl;
-import static org.easymock.classextension.EasyMock.createStrictControl;
-
 import java.util.HashMap;
 
 import javax.el.ELContext;
@@ -51,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.easymock.internal.MocksControl.MockType;
+import org.easymock.internal.MocksControl;
 import org.jboss.test.faces.mock.factory.FactoryMock;
 import org.jboss.test.faces.mock.factory.FactoryMockingService;
 import org.jboss.test.faces.writer.RecordingResponseWriter;
@@ -59,9 +55,9 @@ import org.jboss.test.faces.writer.RecordingResponseWriter;
 /**
  * <p class="changed_added_4_0">
  * </p>
- * 
+ *
  * @author asmirnov@exadel.com
- * 
+ *
  */
 public class MockFacesEnvironment {
 
@@ -74,7 +70,7 @@ public class MockFacesEnvironment {
     private boolean withFactories = false;
 
     private ExternalContext externalContext;
-    
+
     private ELContext elContext;
 
     private ServletContext context;
@@ -96,7 +92,7 @@ public class MockFacesEnvironment {
 	private RecordingResponseWriter responseWriter;
 
     private static boolean jsf2;
-    
+
     /** The service. */
     private FactoryMockingService service = FactoryMockingService.getInstance();
 
@@ -112,21 +108,21 @@ public class MockFacesEnvironment {
     // Factory methods
 
     public static MockFacesEnvironment createEnvironment() {
-        return new MockFacesEnvironment(createControl());
+        return new MockFacesEnvironment(new FacesMocksClassControl(MocksControl.MockType.DEFAULT));
     }
 
     public static MockFacesEnvironment createStrictEnvironment() {
-        return new MockFacesEnvironment(createStrictControl());
+        return new MockFacesEnvironment(new FacesMocksClassControl(MocksControl.MockType.STRICT));
     }
 
     public static MockFacesEnvironment createNiceEnvironment() {
-        return new MockFacesEnvironment(createNiceControl());
+        return new MockFacesEnvironment(new FacesMocksClassControl(MocksControl.MockType.NICE));
     }
 
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the instance
      */
     public static MockFacesEnvironment getInstance() {
@@ -220,10 +216,10 @@ public class MockFacesEnvironment {
         withFactories = true;
         return this;
     }
-    
+
     /**
      * Setup and enhance.
-     * 
+     *
      * @param <T>
      *            the generic type
      * @param type
@@ -343,7 +339,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the facesContext
      */
     public FacesContext getFacesContext() {
@@ -353,7 +349,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the externalContext
      */
     public ExternalContext getExternalContext() {
@@ -371,7 +367,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the context
      */
     public ServletContext getContext() {
@@ -381,7 +377,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the request
      */
     public HttpServletRequest getRequest() {
@@ -391,7 +387,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the response
      */
     public HttpServletResponse getResponse() {
@@ -401,7 +397,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the application
      */
     public Application getApplication() {
@@ -411,7 +407,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the viewHandler
      */
     public ViewHandler getViewHandler() {
@@ -421,7 +417,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the renderKit
      */
     public RenderKit getRenderKit() {
@@ -431,7 +427,7 @@ public class MockFacesEnvironment {
     /**
      * <p class="changed_added_4_0">
      * </p>
-     * 
+     *
      * @return the responseStateManager
      */
     public ResponseStateManager getResponseStateManager() {
