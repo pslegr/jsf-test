@@ -233,7 +233,6 @@ public class FacesMockitoRunner extends BlockJUnit4ClassRunner {
      * @param feature the feature
      */
     private void initializeFeature(Environment.Feature feature) {
-        System.out.println("initializaing feature " + feature);
         switch (feature) {
             case FACTORIES:
                 environment.withFactories();
