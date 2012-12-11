@@ -75,7 +75,6 @@ public class FacesClassProxyFactory<T> implements IProxyFactory<T> {
         });
 
         Class mockClass = enhancer.createClass();
-        System.out.println(mockClass);
         Enhancer.registerCallbacks(mockClass, new Callback[] { interceptor });
 
         if (ClassExtensionHelper.getCurrentConstructorArgs() != null) {
