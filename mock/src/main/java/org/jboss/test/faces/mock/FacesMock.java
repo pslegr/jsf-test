@@ -14,6 +14,10 @@ public class FacesMock {
         //hidden constructor
     }
 
+    public static org.easymock.classextension.IMocksControl createControl(){
+        return new FacesMocksClassControl(MocksControl.MockType.DEFAULT);
+    }
+
     public static MockFacesEnvironment createMockEnvironment(){
         return new MockFacesEnvironment(new FacesMocksClassControl(MocksControl.MockType.DEFAULT));
     }
