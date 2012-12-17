@@ -31,6 +31,7 @@ import org.jboss.test.faces.ApplicationServer;
 import org.jboss.test.faces.FacesEnvironment;
 import org.jboss.test.faces.staging.StagingServer;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -46,6 +47,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class HtmlUnitEnvironment extends FacesEnvironment {
 
     private WebClient webClient;
+    private BrowserVersion browserVersion = BrowserVersion.getDefault();
 
     public HtmlUnitEnvironment() {
         super();
@@ -60,9 +62,9 @@ public class HtmlUnitEnvironment extends FacesEnvironment {
         
         ApplicationServer server = getServer();
         if (server instanceof StagingServer) {
-            result = new LocalWebClient((StagingServer) server);
+            result = new LocalWebClient((StagingServer) server, browserVersion);
         } else {
-            result = new WebClient();
+            result = new WebClient(browserVersion);
         }
 
         return result;
@@ -70,6 +72,10 @@ public class HtmlUnitEnvironment extends FacesEnvironment {
     
     public WebClient getWebClient() {
         return this.webClient;
+    }
+    
+    public void setBrowserVersion(BrowserVersion browserVersion) {
+    	this.browserVersion = browserVersion;
     }
     
     @Override
