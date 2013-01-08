@@ -19,7 +19,6 @@
     </scm>
 
     <modules>
-        <module>maven-mockgenerator-plugin</module>
         <module>mock</module>
         <module>jsf-mockito</module>
         <module>stage</module>
@@ -57,20 +56,6 @@
                                         <goals>
                                             <goal>java</goal>
                                             <goal>xpp3-reader</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.jboss.test-jsf</groupId>
-                                        <artifactId>maven-mockgenerator-plugin</artifactId>
-                                        <versionRange>[1.0.8-SNAPSHOT,)</versionRange>
-                                        <goals>
-                                            <goal>generate-mock</goal>
-                                            <goal>generate-test-mock</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
