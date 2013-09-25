@@ -1,15 +1,14 @@
 package org.jboss.test.faces.staging;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletException;
 
-import org.jboss.test.faces.staging.RequestChain;
-import org.jboss.test.faces.staging.ServerResource;
-import org.jboss.test.faces.staging.ServletContainer;
-import org.jboss.test.faces.staging.StagingServletContext;
-import org.jboss.test.faces.staging.StaticServlet;
 import org.junit.Test;
 
 public class ServletTest {
@@ -46,7 +45,7 @@ public class ServletTest {
 	public void testGetPathInfo() {
 		StaticServlet staticServlet = new StaticServlet();
 		RequestChain servlet = new ServletContainer("/foo/*",staticServlet);
-		assertEquals("bar.jsf", servlet.getPathInfo("/foo/bar.jsf"));
+		assertEquals("/bar.jsf", servlet.getPathInfo("/foo/bar.jsf"));
 		assertNull(servlet.getPathInfo("/foz/bar.jsf"));
 		servlet = new ServletContainer("*.jsf",staticServlet);
 		assertNull(servlet.getPathInfo("/foo/bar.jsf"));
@@ -68,27 +67,27 @@ public class ServletTest {
 			@Override
 			protected void valueBound(ServletContextAttributeEvent event) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			protected void valueReplaced(ServletContextAttributeEvent event) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			protected void valueUnbound(
 					ServletContextAttributeEvent servletContextAttributeEvent) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public String getMimeType(String file) {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 		};
 		servlet.init(context);
 		assertSame(context,staticServlet.getServletContext());

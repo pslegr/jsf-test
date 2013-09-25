@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.jboss.test.faces.staging;
 
@@ -21,7 +21,7 @@ import javax.servlet.ServletResponse;
 /**
  * This class represens Servlet in the web application.
  * @author asmirnov
- * 
+ *
  */
 public class ServletContainer implements RequestChain {
 
@@ -67,14 +67,14 @@ public class ServletContainer implements RequestChain {
 	/**
 	 * Append filter initialization parameter. Name and value are same as
 	 * defined in the web.xml
-	 * 
+	 *
 	 * <code>
 	 * &lt;init-param&gt;
 	 *    &lt;param-name&gt;foo&lt;/param-name&gt;
 	 *    &lt;param-value&gt;bar&lt;/param-value&gt;
 	 *   &lt;/init-param&gt;
 	 * </code>
-	 * 
+	 *
 	 * @param name
 	 * @param value
 	 * @throws IllegalStateException if servlet was already initialized.
@@ -109,7 +109,7 @@ public class ServletContainer implements RequestChain {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.jboss.test.faces.staging.RequestChain#isApplicable(java.lang.String)
 	 */
@@ -145,7 +145,11 @@ public class ServletContainer implements RequestChain {
 			return null;
 		}
 		if (prefixMapped) {
-			return path.substring(mapping.length());
+		    String pathInfo = path.substring(mapping.length() - 1);
+		    if (!pathInfo.startsWith("/")) {
+		        pathInfo = "/" + pathInfo;
+		    }
+		    return pathInfo;
 		} else {
 			return null;
 		}
@@ -185,7 +189,7 @@ public class ServletContainer implements RequestChain {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.jboss.test.faces.staging.RequestChain#execute(javax.servlet.ServletRequest
 	 * , javax.servlet.ServletResponse)
