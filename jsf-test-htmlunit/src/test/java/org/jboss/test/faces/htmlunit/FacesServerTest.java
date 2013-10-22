@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.jboss.test.faces.htmlunit;
 
@@ -29,7 +29,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
  * @author asmirnov
- * 
+ *
  */
 @RunWith(Parameterized.class)
 public class FacesServerTest {
@@ -75,14 +75,14 @@ public class FacesServerTest {
     /**
      * Test method for
      * {@link org.jboss.test.faces.staging.StagingServer#getConnection(java.net.URL)}.
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testHelloFacelets() throws Exception {
         HtmlPage page = environment.getPage("/hello.jsf");
-        System.out.println(page.asXml());		
-        HtmlElement submitElement = page.getElementById("helloForm:submit");
+        System.out.println(page.asXml());
+        HtmlElement submitElement = (HtmlElement) page.getElementById("helloForm:submit");
         HtmlForm htmlForm = page.getFormByName("helloForm");
         htmlForm.getInputByName("helloForm:username");
         assertNotNull(htmlForm);
@@ -91,7 +91,7 @@ public class FacesServerTest {
         input.setValueAttribute("foo");
         HtmlPage responsePage = submitElement.click();
         assertNotNull(responsePage);
-        System.out.println(responsePage.asXml());		
+        System.out.println(responsePage.asXml());
         HttpSession session = environment.getServer().getSession(false);
         assertNotNull(session);
         HelloBean bean = (HelloBean) session.getAttribute("HelloBean");
@@ -99,7 +99,7 @@ public class FacesServerTest {
         assertEquals("foo", bean.getName());
         Element span = responsePage.getElementById("responseform:userLabel");
         assertNotNull(span);
-        assertEquals("foo", span.getTextContent().trim());		
+        assertEquals("foo", span.getTextContent().trim());
     }
 
 
